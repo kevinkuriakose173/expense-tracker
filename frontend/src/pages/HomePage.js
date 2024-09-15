@@ -110,69 +110,97 @@ function HomePage({ setIsAuthenticated }) {
   }
 
   return (
-    <div>
-      <h1>Your Expenses</h1>
-
-      <h2>Total Balance: ${totalBalance}</h2>
+    <div className="container my-5">
+      <h1 className="mb-4 text-center">Your Expenses</h1>
+      {error && <div className="alert alert-danger">{error}</div>}
+      <div className="card mb-4">
+        <div className="card-body text-center">
+          <h2>Total Expenses: <span className="text-danger">${totalBalance}</span></h2>
+        </div>
+      </div>
 
       {/* Form to add a new expense */}
-      <form onSubmit={handleAddExpense}>
-        <input
-          type="text"
-          placeholder="Description"
-          value={newExpense.description}
-          onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Amount"
-          value={newExpense.amount}
-          onChange={(e) => setNewExpense({ ...newExpense, amount: e.target.value })}
-          required
-        />
-        <button type="submit">Add Expense</button>
+      <form onSubmit={handleAddExpense} className="mb-4">
+        <div className="form-group mb-3">
+          <input
+            type="text"
+            placeholder="Description"
+            className="form-control"
+            value={newExpense.description}
+            onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
+            required
+          />
+        </div>
+        <div className="form-group mb-3">
+          <input
+            type="number"
+            placeholder="Amount"
+            className="form-control"
+            value={newExpense.amount}
+            onChange={(e) => setNewExpense({ ...newExpense, amount: e.target.value })}
+            required
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">Add Expense</button>
       </form>
 
       {/* List of expenses */}
       {expenses.length > 0 ? (
-        <ul>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th className="text-end">Amount</th>
+            <th className="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
           {expenses.map((expense) => (
-            <li key={expense._id}>
+            <tr key={expense._id}>
               {editingExpense === expense._id ? (
                 // If the expense is being edited, show input fields and buttons
-                <form onSubmit={(e) => handleSaveChanges(e, expense._id)}>
-                  <input
-                    type="text"
-                    value={editFormData.description}
-                    onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
-                    required
-                  />
-                  <input
-                    type="number"
-                    value={editFormData.amount}
-                    onChange={(e) => setEditFormData({ ...editFormData, amount: e.target.value })}
-                    required
-                  />
-                  <button type="submit">Confirm</button>
-                  <button type="button" onClick={handleCancelEdit}>Cancel</button>
-                </form>
+                <>
+                  <td>
+                    <input
+                      type="text"
+                      value={editFormData.description}
+                      className="form-control"
+                      onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+                      required
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      value={editFormData.amount}
+                      className="form-control text-end"
+                      onChange={(e) => setEditFormData({ ...editFormData, amount: e.target.value })}
+                      required
+                    />
+                  </td>
+                  <td className="text-end">
+                    <button type="submit" className="btn btn-success me-2" onClick={(e) => handleSaveChanges(e, expense._id)}>Confirm</button>
+                    <button type="button" className="btn btn-secondary" onClick={handleCancelEdit}>Cancel</button>
+                  </td>
+                </>
               ) : (
                 <>
-                  {/* Display the expense if it's not being edited */}
-                  {expense.description}: ${expense.amount.toFixed(2)}
-                  <button onClick={() => handleEditClick(expense)}>Edit</button>
-                  <button onClick={() => handleDeleteExpense(expense._id)}>Delete</button>
+                  <td>{expense.description}</td>
+                  <td className="text-end">${expense.amount.toFixed(2)}</td>
+                  <td className="text-end">
+                    <button className="btn btn-warning me-2" onClick={() => handleEditClick(expense)}>Edit</button>
+                    <button className="btn btn-danger" onClick={() => handleDeleteExpense(expense._id)}>Delete</button>
+                  </td>
                 </>
               )}
-            </li>
+            </tr>
           ))}
-        </ul>
-      ) : (
-        <p>You have no expenses!</p>
-      )}
-
-      <button onClick={handleLogout}>Logout</button>
+        </tbody>
+      </table>
+    ) : (
+      <p>You have no expenses!</p>
+    )}
+      <button className="btn btn-danger mt-4" onClick={handleLogout}>Logout</button>
     </div>
   );
 }

@@ -1,0 +1,4 @@
+/* Apply PT Mono globally to all text */
+body {
+  font-family: 'PT Mono', monospace;
+}
